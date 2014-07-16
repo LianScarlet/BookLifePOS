@@ -7,29 +7,49 @@
   <!-- 系統必要的 CSS -->
   <link rel="stylesheet" href="font-awesome-4.1.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap.min.css">  
-  <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap-theme.css">  
+  <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap-theme.css"> 
+  <!-- 系統必要的 js 檔案 -->
+  <script src="js/jquery-1.11.1.min.js"></script>
+  <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script> 
   <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript">
-    window.onload=function(){
-
-      document.getElementById("complete").onclick=dealcomplete;
-      document.getElementById("search").onclick=alert();
-    }
-    /*var detail_list = [];
+    var detail_list = [];
     var detail_index=0;
     var detailapiP1="http://10.10.59.238:8080/"
     var detailapiP2="?v=view_cbookcase&cid=20166307&";
     var searchapi="";
     var data;
+    var input_temp;
+
+
+
+    $(function(){
+      /*$( "#input_search" ).keypup(function(data) { 
+        if(data.keyCode==13)
+        {
+          checktype();
+        }
+        if( $("#input_search").val() != "" && $("#input_search").val() != input_temp )
+        {
+
+        }
+      });*/
+//document.getElementById("complete").onclick=dealcomplete;
+$("#search").click(checktype);
+$("#complete").click(dealcomplete);
+//$('.typeahead').typeahead(source);
+
+
+});
+
     function checktype()
     {
-
       $("#resultinfo").empty();
-      var searchtxt = $("#book").val();
+      var searchtxt = $("#input_search").val();
       if(searchtxt=="")
       {
         $("#resultinfo").empty();
-        $("#resultinfo").append("<p> No Resuult </p><p> 請輸入 ISBN 或 書名 </p><a href=\"#\" class=\"ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline\" data-rel=\"back\" id=\"ok\" >OK</a>")
+        $("#resultinfo").append("<h4 class=\"content-tmplate\"> 請輸入 ISBN 或 書名 </h4>")
       }else{
         if($.isNumeric(searchtxt) && (searchtxt.length == 13 || searchtxt.length == 10))
         {
@@ -50,15 +70,15 @@
       $.getJSON(searchapi, function(jstr) {
         if(jstr.item.length == 1){
     $.each(jstr.item, function(i, o) { // index, object
-      $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><a href=\"#\" class=\"ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline\" data-rel=\"back\" id=\"ok\" onclick=\"adddetail()\">OK</a>");
+      $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>");
     });
   }else if(jstr.item.length > 1){
-    $("#resultinfo").append("<p> Resuult > 1 </p><a href=\"#\" class=\"ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline\" data-rel=\"back\" id=\"ok\">OK</a>");
+    $("#resultinfo").append("<p> Resuult > 1 </p><button href=\"#\" type=\"button\" class=\" btn btn-default\"  id=\"ok\" onclick=\"adddetail()\">OK</button>");
   }else{
-    $("#resultinfo").append("<p> No Resuult </p><a href=\"#\" class=\"ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline\" data-rel=\"back\" id=\"ok\" >OK</a>")
+    $("#resultinfo").append("<p class=\"content-tmplate\"> No Result </p>")
   }
 })
-document.getElementById("book").value = "";
+document.getElementById("input_search").value = "";
 
 }
 
@@ -108,27 +128,10 @@ function totalcost(){
     $("#detailtable").append("<tr></tr>");
     detail_list = [];
     totalcost();
-    document.getElementById("book").value = "";
+    document.getElementById("input_search").value = "";
   }
 
-  window.onload=function(){
 
-    $( "body" ).keypress(function(data) { 
-
-      if(data.keyCode==13)
-      {
-        alert(isbnstr);
-        isbnstr="";
-      }else{
-        isbnstr += String.fromCharCode(data.keyCode);
-        //document.getElementById("book").value = isbnstr; 
-        document.getElementById("book").focus();
-      }
-    });
-
-document.getElementById("complete").onclick=dealcomplete;
-document.getElementById("search").onclick=checktype;
-}*/
 
 </script>
 </head>
@@ -161,14 +164,14 @@ document.getElementById("search").onclick=checktype;
         <div>
           <table class="table" >
             <thead>
-              <th colspan="3"><input type="text" class=" input-medium search-query" name="book" id="book" placeholder="ISBN" autofocus></th>
+              <th colspan="3"><input type="text" class=" input-medium search-query" id="input_search" placeholder="ISBN or Title" data-provide="typeahead" autofocus></th>
               <th><button class=" btn btn-default" id="search"><i class="fa fa-search" ></i></button></th>
             </thead>
             <tbody >
               <tr>
                 <th colspan="2">消費總金額</th>
                 <th id="totalprice" >$0</th>
-                <th><button class="btn btn-default">Complete</button></th>
+                <th><button class="btn btn-default" id="complete">Complete</button></th>
               </tr>
               <tr>
                 <th>刪除</th>
@@ -177,25 +180,23 @@ document.getElementById("search").onclick=checktype;
                 <th>數量</th>
               </tr>
             </tbody>
-            <tfootid="detailtable">
-          </tfoot>
-        </table>
+            <tfoot id="detailtable">
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-4 starter-template bgc" id="resultinfo">
+      </div>
+      <div class="col-md-2 starter-template bgc">
       </div>
     </div>
-    <div class="col-md-4 starter-template bgc" id="resultinfo">
-    </div>
-    <div class="col-md-2 starter-template bgc">
-    </div>
+
+
+
   </div>
-
-
-
-</div>
 </div><!-- /.container -->
 
-<!-- 系統必要的 js 檔案 -->
-<script src="js/jquery-1.11.1.min.js"></script>
-<script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+
 
 </body>
 </html>

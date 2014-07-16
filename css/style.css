@@ -23,10 +23,10 @@
 }
 
 .bgc:nth-of-type(odd) {
-	background: #cccccc;
+	background: #98F898;
 
 }
 .bgc:nth-of-type(even) {
-	background: #eeeeee;
+	background: #F0E68C;
 
 }
