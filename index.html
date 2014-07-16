@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap-theme.css"> 
   <!-- 系統必要的 js 檔案 -->
   <script src="js/jquery-1.11.1.min.js"></script>
-  <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script> 
+  <script src="bootstrap-3.2.0-dist/js/bootstrap.js"></script> 
+  <script src="js/bootstrap-typeahead.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript">
     var detail_list = [];
@@ -34,10 +35,17 @@
 
         }
       });*/
-//document.getElementById("complete").onclick=dealcomplete;
-$("#search").click(checktype);
-$("#complete").click(dealcomplete);
-//$('.typeahead').typeahead(source);
+
+      //document.getElementById("complete").onclick=dealcomplete;
+    
+    $("#search").click(checktype);
+    $("#complete").click(dealcomplete);
+
+    var mySource = [{ id: 1, name: 'Terry'}, { id: 2, name: 'Mark'}, { id: 3, name: 'Jacob'}];
+
+    $('#input_search').typeahead({
+        source: mySource
+    });
 
 
 });
@@ -164,7 +172,11 @@ function totalcost(){
         <div>
           <table class="table" >
             <thead>
-              <th colspan="3"><input type="text" class=" input-medium search-query" id="input_search" placeholder="ISBN or Title" data-provide="typeahead" autofocus></th>
+              <th colspan="3">
+
+              <input type="text" class=" input-medium search-query" id="input_search" placeholder="ISBN or Title" data-provide="typeahead" autofocus >
+
+              </th>
               <th><button class=" btn btn-default" id="search"><i class="fa fa-search" ></i></button></th>
             </thead>
             <tbody >
@@ -195,6 +207,10 @@ function totalcost(){
 
   </div>
 </div><!-- /.container -->
+
+
+
+
 
 
 
