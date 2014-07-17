@@ -19,6 +19,7 @@
     var detailapiP1="http://10.10.59.238:8080/"
     var detailapiP2="?v=view_cbookcase&cid=20166307&";
     var searchapi="";
+    var searchdata="";
     var mySource = [];
     var input_temp ="";
 
@@ -41,22 +42,24 @@
           console.log("input",inputval);
           $.getJSON(searchapi, function(jstr) {
             // appen data to input element
-            appenData(ele,jstr);
-            input_temp = $("#input_search").val();
+            searchdata = jstr;
+            appenData(ele,jstr);            
           });  
         }  
+
+        input_temp = inputval;
 
       });
 
       $("#search").click(checktype);
       $("#complete").click(dealcomplete);
-    
+
       function appenData (ele,data){
         console.log(ele,data);
         mySource = [] ;
         for(var i=0;i<data.item.length;i++)
-          mySource.push( { id : i, name : data.item[i].Title });
-
+          mySource.push( { id : data.item[i].OID, name : data.item[i].Title + "," + data.item[i].Publisher + "," + data.item[i].OID});
+        console.log(mySource);
         ele.typeahead().data('typeahead').source=mySource;
         ele.typeahead({ source: mySource}).data('typeahead').lookup();
       }
@@ -64,22 +67,25 @@
     });
 function checktype()
 {
-  $("#resultinfo").empty();
-  var searchtxt = $("#input_search").val();
-  if(searchtxt=="")
-  {
+  var splitsearch = $('#input_search').val().split(',');
+  
+  if(splitsearch[2] != undefined){
     $("#resultinfo").empty();
-    $("#resultinfo").append("<h4 class=\"content-tmplate\"> 請輸入 ISBN 或 書名 </h4>")
+    $.each(searchdata.item, function(i, o) {
+     if(o.OID == splitsearch[2])
+       $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>"); 
+   }); 
   }else{
-    if($.isNumeric(searchtxt) && (searchtxt.length == 13 || searchtxt.length == 10))
+    $("#resultinfo").empty();
+    var searchtxt = $("#input_search").val();
+    if(searchtxt=="")
     {
+      $("#resultinfo").empty();
+      $("#resultinfo").append("<h4 class=\"content-tmplate\"> 請輸入 ISBN 或 書名 </h4>")
+    }else{
       searchapi= detailapiP1 + "datafeedjson.ashx" + detailapiP2 + 'ISBN=' + searchtxt;
+      searchresult();
     }
-    else
-    {
-      searchapi= detailapiP1 + "datafeedjson2.ashx" + detailapiP2 + 'Title=' + searchtxt;
-    }
-    searchresult();
   }
 }
 
@@ -92,8 +98,6 @@ function searchresult()
     $.each(jstr.item, function(i, o) { // index, object
       $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>");
     });
-  }else if(jstr.item.length > 1){
-    $("#resultinfo").append("<p> Resuult > 1 <br/> Somthing Error </p>");
   }else{
     $("#resultinfo").append("<p class=\"content-tmplate\"> No Result </p>")
   }
@@ -186,7 +190,7 @@ function totalcost(){
             <thead>
               <th colspan="3">
 
-                <input type="text" class=" input-medium search-query" id="input_search" placeholder="ISBN or Title" data-provide="typeahead" autofocus >
+                <input type="text" class=" input-medium search-query" id="input_search" placeholder="請輸入[ISBN]或[完整書名]" data-provide="typeahead" autofocus >
 
               </th>
               <th><button class=" btn btn-default" id="search"><i class="fa fa-search" ></i></button></th>
