@@ -27,7 +27,6 @@
 
     $(function(){
 
-      var s = 
       $( "#input_search" ).keyup(function(data) {
         var ele = $(this);
         var inputval = ele.val();
@@ -39,7 +38,7 @@
         {
 
           searchapi= detailapiP1 + "datafeedjson2.ashx" + detailapiP2 + 'Title=' + inputval;
-          console.log("input",inputval);
+          //console.log("input",inputval);
           $.getJSON(searchapi, function(jstr) {
             // appen data to input element
             searchdata = jstr;
@@ -51,7 +50,7 @@
 
       });
 
-      $("#search").click(checktype);
+      $("#search").click(searchresult);
       $("#complete").click(dealcomplete);
 
       function appenData (ele,data){
@@ -65,45 +64,47 @@
       }
 
     });
-function checktype()
+
+function searchresult()
 {
   var splitsearch = $('#input_search').val().split(',');
   
   if(splitsearch[2] != undefined){
+
     $("#resultinfo").empty();
     $.each(searchdata.item, function(i, o) {
+
      if(o.OID == splitsearch[2])
+
        $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>"); 
+
    }); 
   }else{
+
     $("#resultinfo").empty();
     var searchtxt = $("#input_search").val();
+
     if(searchtxt=="")
     {
       $("#resultinfo").empty();
+
       $("#resultinfo").append("<h4 class=\"content-tmplate\"> 請輸入 ISBN 或 書名 </h4>")
     }else{
       searchapi= detailapiP1 + "datafeedjson.ashx" + detailapiP2 + 'ISBN=' + searchtxt;
-      searchresult();
-    }
-  }
-}
-
-function searchresult()
-{
-
-  $("#resultinfo").empty();
-  $.getJSON(searchapi, function(jstr) {
-    if(jstr.item.length == 1){
+      //searchresult();
+      $.getJSON(searchapi, function(jstr) {
+        if(jstr.item.length == 1){
     $.each(jstr.item, function(i, o) { // index, object
       $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>");
+
     });
   }else{
     $("#resultinfo").append("<p class=\"content-tmplate\"> No Result </p>")
   }
 })
-  document.getElementById("input_search").value = "";
-
+    }
+  }
+  $('#input_search').val('');
 }
 
 function adddetail()
@@ -111,9 +112,11 @@ function adddetail()
   var btitle = $("#title").text();
   var bprice = $("#price").val();
   var bamount = $("#amount").val();
+
   if($.isNumeric(bprice) && $.isNumeric(bamount))
   {
     detail_list[detail_list.length]="<tr><td></td><td>" + btitle +"</td><td id=\"price"+detail_list.length+"\">"+bprice+"</td><td id=\"amount"+detail_list.length+"\">"+bamount+"</td></tr>";
+    $("#resultinfo").empty();
   }else
   {
     alert("格式輸入錯誤");
@@ -122,8 +125,10 @@ function adddetail()
 
 }
 function deldetail(index){
+
   detail_list.splice(index,1);
   showdetail();
+
 }
 function showdetail(){
   $("#detailtable").empty();
@@ -134,26 +139,28 @@ function showdetail(){
 }
 
 function totalcost(){
+
   var total = 0;
   var price = 0;
   var amount = 0;
-    //alert(document.getElementById("price0").value);
-    for(var i=0;i<detail_list.length;i++)
-    {
-      price = document.getElementById("price"+i).textContent;
-      amount = document.getElementById("amount"+i).textContent;
-      total += price * amount;
-    }
-    document.getElementById("totalprice").innerHTML = 'NT$　' + total;
-  }
 
-  function dealcomplete(){
-    $("#detailtable").empty();
-    $("#detailtable").append("<tr></tr>");
-    detail_list = [];
-    totalcost();
-    document.getElementById("input_search").value = "";
+  for(var i=0;i<detail_list.length;i++)
+  {
+    price = document.getElementById("price"+i).textContent;
+    amount = document.getElementById("amount"+i).textContent;
+    total += price * amount;
   }
+  document.getElementById("totalprice").innerHTML = 'NT$　' + total;
+
+}
+
+function dealcomplete(){
+  $("#detailtable").empty();
+  $("#detailtable").append("<tr></tr>");
+  detail_list = [];
+  totalcost();
+  document.getElementById("input_search").value = "";
+}
 
 
 
@@ -218,17 +225,7 @@ function totalcost(){
       <div class="col-md-2 starter-template bgc">
       </div>
     </div>
-
-
-
   </div>
 </div><!-- /.container -->
-
-
-
-
-
-
-
 </body>
 </html>
