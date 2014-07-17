@@ -25,7 +25,6 @@
 //  Twitter Bootstrap 2.0+
 //
 //  ----------------------------------------------------------------------------
-
 !
 function ($) {
 
@@ -50,8 +49,8 @@ function ($) {
         this.render = this.options.render || this.render;
         this.select = this.options.select || this.select;
         this.sorter = this.options.sorter || this.sorter;
-        this.source = this.options.source || this.source;        
-                
+        this.source = this.options.source ;        
+        
         if (!this.source.length) {
             var ajax = this.options.ajax;
 
@@ -90,10 +89,10 @@ function ($) {
             if (!isSupported) {
               this.$element.setAttribute(eventName, 'return;');
               isSupported = typeof this.$element[eventName] === 'function';
-            }
+          }
 
-            return isSupported;
-        },
+          return isSupported;
+      },
 
         //=============================================================================================================
         //
@@ -107,12 +106,12 @@ function ($) {
         //
         ajaxer: function () { 
             var that = this,
-                query = that.$element.val();
+            query = that.$element.val();
             
             if (query === that.query) {
                 return that;
             }
-    
+            
             // Query changed
             that.query = query;
 
@@ -132,12 +131,12 @@ function ($) {
 
                 return that.shown ? that.hide() : that;
             }
-                    
+            
             // Query is good to send, set a timer
             that.ajax.timerId = setTimeout(function() {
                 $.proxy(that.ajaxExecute(query), that)
             }, that.ajax.timeout);
-                    
+            
             return that;
         },
 
@@ -156,7 +155,7 @@ function ($) {
             this.ajax.xhr = jAjax(this.ajax.url, params, $.proxy(this.ajaxLookup, this));
             this.ajax.timerId = null;
         },
-    
+        
         //------------------------------------------------------------------
         //
         //  Perform a lookup in the AJAX results
@@ -176,7 +175,7 @@ function ($) {
             this.ajax.data = data;
 
             items = this.grepper(this.ajax.data);
-    
+            
             if (!items || !items.length) {
                 return this.shown ? this.hide() : this;
             }
@@ -207,7 +206,7 @@ function ($) {
         //
         lookup: function (event) {
             var that = this,
-                items;
+            items;
 
             if (that.ajax) {
                 that.ajaxer();
@@ -224,7 +223,7 @@ function ($) {
                 if (!items || !items.length) {
                     return that.shown ? that.hide() : that;
                 }
-
+                
                 return that.render(items.slice(0, that.options.items)).show();
             }
         },
@@ -235,7 +234,7 @@ function ($) {
         //
         grepper: function(data) {
             var that = this,
-                items;
+            items;
 
             if (data && data.length && !data[0].hasOwnProperty(that.options.display)) {                
                 return null;
@@ -262,10 +261,10 @@ function ($) {
         //
         sorter: function (items) {
             var that = this,
-                beginswith = [],
-                caseSensitive = [],
-                caseInsensitive = [],
-                item;
+            beginswith = [],
+            caseSensitive = [],
+            caseInsensitive = [],
+            item;
 
             while (item = items.shift()) {
                 if (!item[that.options.display].toLowerCase().indexOf(this.query.toLowerCase())) {
@@ -334,18 +333,18 @@ function ($) {
         //  Renders the results list
         //
         render: function (items) {
-            var that = this;
+           var that = this;
 
-            items = $(items).map(function (i, item) {
-                i = $(that.options.item).attr('data-value', item[that.options.val]);
-                i.find('a').html(that.highlighter(item[that.options.display], item));
-                return i[0];
-            });
+           items = $(items).map(function (i, item) {
+            i = $(that.options.item).attr('data-value', item[that.options.val]);
+            i.find('a').html(that.highlighter(item[that.options.display], item));
+            return i[0];
+        });
 
-            items.first().addClass('active');
-            this.$menu.html(items);
-            return this;
-        },
+           items.first().addClass('active');
+           this.$menu.html(items);
+           return this;
+       },
 
         //------------------------------------------------------------------
         //
@@ -400,16 +399,16 @@ function ($) {
         //
         listen: function () {
             this.$element.on('blur', $.proxy(this.blur, this))
-                         .on('keyup', $.proxy(this.keyup, this));
+            .on('keyup', $.proxy(this.keyup, this));
 
-    		if (this.eventSupported('keydown')) {
-				this.$element.on('keydown', $.proxy(this.keypress, this));
-			} else {
-				this.$element.on('keypress', $.proxy(this.keypress, this));
-			}
+            if (this.eventSupported('keydown')) {
+                this.$element.on('keydown', $.proxy(this.keypress, this));
+            } else {
+                this.$element.on('keypress', $.proxy(this.keypress, this));
+            }
 
             this.$menu.on('click', $.proxy(this.click, this))
-                      .on('mouseenter', 'li', $.proxy(this.mouseenter, this));
+            .on('mouseenter', 'li', $.proxy(this.mouseenter, this));
         },
 
         //------------------------------------------------------------------
@@ -423,26 +422,26 @@ function ($) {
             switch (e.keyCode) {
                 case 40:
                     // down arrow
-                case 38:
+                    case 38:
                     // up arrow
                     break;
-                case 9:
+                    case 9:
                     // tab
-                case 13:
+                    case 13:
                     // enter
                     if (!this.shown) {
                         return;
                     }
                     this.select();
                     break;
-                case 27:
+                    case 27:
                     // escape
                     this.hide();
                     break;
-                default:
+                    default:
                     this.lookup();
-            }
-        },
+                }
+            },
 
         //------------------------------------------------------------------
         //
@@ -457,24 +456,24 @@ function ($) {
             switch (e.keyCode) {
                 case 9:
                     // tab
-                case 13:
+                    case 13:
                     // enter
-                case 27:
+                    case 27:
                     // escape
                     e.preventDefault();
                     break;
-                case 38:
+                    case 38:
                     // up arrow
                     e.preventDefault();
                     this.prev();
                     break;
-                case 40:
+                    case 40:
                     // down arrow
                     e.preventDefault();
                     this.next();
                     break;
-            }
-        },
+                }
+            },
 
         //------------------------------------------------------------------
         //
@@ -487,8 +486,8 @@ function ($) {
             setTimeout(function () {
                 if (!that.$menu.is(':focus')) {
                   that.hide();
-                }
-            }, 150)
+              }
+          }, 150)
         },
 
         //------------------------------------------------------------------
@@ -518,8 +517,8 @@ function ($) {
     $.fn.typeahead = function (option) {
         return this.each(function () {
             var $this = $(this),
-                data = $this.data('typeahead'),
-                options = typeof option === 'object' && option;
+            data = $this.data('typeahead'),
+            options = typeof option === 'object' && option;
 
             if (!data) {
                 $this.data('typeahead', (data = new Typeahead(this, options)));
