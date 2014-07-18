@@ -26,7 +26,6 @@
 
 
     $(function(){
-
       $( "#input_search" ).keyup(function(data) {
         var ele = $(this);
         var inputval = ele.val();
@@ -79,6 +78,7 @@ function searchresult()
        $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>"); 
 
    }); 
+    $('#price').focus();
   }else{
 
     $("#resultinfo").empty();
@@ -96,8 +96,8 @@ function searchresult()
         if(jstr.item.length == 1){
     $.each(jstr.item, function(i, o) { // index, object
       $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>");
-
     });
+    $('#price').focus();
   }else{
     $("#resultinfo").append("<p class=\"content-tmplate\"> No Result </p>")
   }
@@ -105,6 +105,19 @@ function searchresult()
     }
   }
   $('#input_search').val('');
+
+  $( "#price" ).keyup(function(data) {
+        if(data.keyCode==13)
+        {
+          $('#amount').focus();
+        }
+      });
+      $( "#amount" ).keyup(function(data) {
+        if(data.keyCode==13)
+        {
+          $('#ok').focus();
+        }
+      });
 }
 
 function adddetail()
@@ -117,6 +130,7 @@ function adddetail()
   {
     detail_list[detail_list.length]="<tr><td></td><td>" + btitle +"</td><td id=\"price"+detail_list.length+"\">"+bprice+"</td><td id=\"amount"+detail_list.length+"\">"+bamount+"</td></tr>";
     $("#resultinfo").empty();
+    $('#input_search').focus();
   }else
   {
     alert("格式輸入錯誤");
@@ -159,7 +173,7 @@ function dealcomplete(){
   $("#detailtable").append("<tr></tr>");
   detail_list = [];
   totalcost();
-  document.getElementById("input_search").value = "";
+  $('#input_search').val('');;
 }
 
 
