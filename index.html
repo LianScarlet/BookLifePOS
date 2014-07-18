@@ -29,10 +29,7 @@
       $( "#input_search" ).keyup(function(data) {
         var ele = $(this);
         var inputval = ele.val();
-        /*if(data.keyCode==13)
-        {
-          checktype();
-        }*/
+
         if( inputval != "" && inputval != input_temp )
         {
 
@@ -43,6 +40,12 @@
             searchdata = jstr;
             appenData(ele,jstr);            
           });  
+        }
+
+        var splitsearch = inputval.split(',');
+        if(data.keyCode==13 && (splitsearch[2] != undefined || inputval.length == 13 || inputval.length == 10))
+        {
+          searchresult();
         }  
 
         input_temp = inputval;
@@ -91,7 +94,6 @@ function searchresult()
       $("#resultinfo").append("<h4 class=\"content-tmplate\"> 請輸入 ISBN 或 書名 </h4>")
     }else{
       searchapi= detailapiP1 + "datafeedjson.ashx" + detailapiP2 + 'ISBN=' + searchtxt;
-      //searchresult();
       $.getJSON(searchapi, function(jstr) {
         if(jstr.item.length == 1){
     $.each(jstr.item, function(i, o) { // index, object
@@ -106,18 +108,18 @@ function searchresult()
   }
   $('#input_search').val('');
 
-  $( "#price" ).keyup(function(data) {
-        if(data.keyCode==13)
-        {
-          $('#amount').focus();
-        }
-      });
-      $( "#amount" ).keyup(function(data) {
-        if(data.keyCode==13)
-        {
-          $('#ok').focus();
-        }
-      });
+  $( "#price" ).keydown(function(data) {
+    if(data.keyCode==13)
+    {
+      $('#amount').focus();
+    }
+  });
+  $( "#amount" ).keydown(function(data) {
+    if(data.keyCode==13)
+    {
+      $('#ok').focus();
+    }
+  });
 }
 
 function adddetail()
@@ -134,6 +136,12 @@ function adddetail()
   }else
   {
     alert("格式輸入錯誤");
+    if($('#price').val() == "")
+    {
+      $('#price').focus();
+    }else{
+      $('#amount').focus();
+    }
   }
   showdetail();
 
@@ -234,7 +242,7 @@ function dealcomplete(){
       </div>
       <div class="col-md-5 starter-template bgc" >
         <div class="book-template" id="resultinfo">
-          
+
         </div>
       </div>
     </div>
