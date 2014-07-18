@@ -12,21 +12,20 @@
 	margin: 3%;
 }
 
-.foo {
-    outline: 2px solid black;
-    margin: 3px;
+.book-template{
+	margin: 30px;
 }
-
 
 .bgc{
 	height: 700px;
 }
 
 .bgc:nth-of-type(odd) {
-	background: #98F898;
+	background-image: url(../img/bookleft.jpg);
+	background-repeat:no-repeat; 
 
 }
 .bgc:nth-of-type(even) {
-	background: #F0E68C;
-
+	background-image: url(../img/bookright.jpg);
+	background-repeat:no-repeat; 
 }
