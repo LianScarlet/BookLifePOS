@@ -16,8 +16,9 @@
   <script type="text/javascript">
     var detail_list = [];
     var detail_index=0;
+    var cid = "20166307";
     var detailapiP1="http://10.10.59.238:8080/"
-    var detailapiP2="?v=view_cbookcase&cid=20166307&";
+    var detailapiP2="?v=view_cbookcase&cid=" + cid + "&";
     var searchapi="";
     var searchdata="";
     var mySource = [];
@@ -34,7 +35,6 @@
         {
 
           searchapi= detailapiP1 + "datafeedjson2.ashx" + detailapiP2 + 'Title=' + inputval;
-          //console.log("input",inputval);
           $.getJSON(searchapi, function(jstr) {
             // appen data to input element
             searchdata = jstr;
@@ -50,113 +50,185 @@
 
         input_temp = inputval;
 
-      });
+        $("#search").click(searchresult);
+        $("#complete").click(dealcomplete);
 
-      $("#search").click(searchresult);
-      $("#complete").click(dealcomplete);
+        //搜尋結果
+        function searchresult(){
 
-      function appenData (ele,data){
-        console.log(ele,data);
-        mySource = [] ;
-        for(var i=0;i<data.item.length;i++)
-          mySource.push( { id : data.item[i].OID, name : data.item[i].Title + "," + data.item[i].Publisher + "," + data.item[i].OID});
-        console.log(mySource);
-        ele.typeahead().data('typeahead').source=mySource;
-        ele.typeahead({ source: mySource}).data('typeahead').lookup();
+          var splitsearch = $('#input_search').val().split(',');
+
+          if(splitsearch[2] != undefined){
+
+            $("#resultinfo").empty();
+
+            $.each(searchdata.item, function(i, o) {
+
+              if(o.OID == splitsearch[2]){
+               $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>");
+
+
+               var lab_price = $('<label>').attr('for', 'price').text('售價'),
+               inp_price = $('<input>').attr({
+                name: 'price',
+                id: 'price' }).focus(),
+               lab_amount= $('<label>').attr('for', 'amount').text('數量'),
+               inp_amount = $('<input>').attr({
+                name: 'amount',
+                id: 'amount',
+                value: '1' }),
+               btn_ok = $('<button>').attr({
+                href: '#',
+                id: 'ok'
+              }).addClass('btn btn-default').text('OK');
+
+               $("#resultinfo").append(lab_price).append(inp_price).append('<br>')
+               .append(lab_amount).append(inp_amount).append('<br>').append(btn_ok);
+
+
+               inp_price.on('keyup', function(event) {
+                 if(event.keyCode==13)inp_amount.focus();  
+               });
+
+               inp_amount.on('keyup', function(event) {
+                 if(event.keyCode==13)btn_ok.focus();  
+               });
+
+               btn_ok.on('click', function(event) {
+                 adddetail(o.OID);  
+               });
+             }
+           }); 
+
+
+$('#price').focus();
+}else{
+
+  $("#resultinfo").empty();
+  var searchtxt = $("#input_search").val();
+
+  if(searchtxt=="")
+  {
+    $("#resultinfo").empty();
+    $("#resultinfo").append("<h4 class=\"content-tmplate\"> 請輸入 ISBN 或 書名 </h4>");
+
+  }else{
+
+    searchapi= detailapiP1 + "datafeedjson.ashx" + detailapiP2 + 'ISBN=' + searchtxt;
+
+    $.getJSON(searchapi, function(jstr) {
+      if(jstr.item.length == 1){
+
+
+        $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+jstr.item[0].Title+"</h3><p>"+jstr.item[0].ISBN+"<br/>"+jstr.item[0].Author+"<br/>"+jstr.item[0].Publisher+"<br/>"+jstr.item[0].PDate+"</p></div>");
+
+
+        var lab_price = $('<label>').attr('for', 'price').text('售價'),
+        inp_price = $('<input>').attr({
+          name: 'price',
+          id: 'price' }).focus(),
+        lab_amount= $('<label>').attr('for', 'amount').text('數量'),
+        inp_amount = $('<input>').attr({
+          name: 'amount',
+          id: 'amount' ,
+          value: '1'}),
+        btn_ok = $('<button>').attr({
+          href: '#',
+          id: 'ok'
+        }).addClass('btn btn-default').text('OK');
+
+        $("#resultinfo").append(lab_price).append(inp_price).append('<br>')
+        .append(lab_amount).append(inp_amount).append('<br>').append(btn_ok);
+
+
+        btn_ok.click(adddetail(jstr.item[0].OID));
+
+        inp_price.on('keyup', function(event) {
+         if(event.keyCode==13)inp_amount.focus();  
+       });
+
+        inp_amount.on('keyup', function(event) {
+         if(event.keyCode==13)btn_ok.focus();  
+       });
+        btn_ok.on('click', function(event) {
+         adddetail(jstr.item[0].OID);  
+       });
+
+      }else{
+        $("#resultinfo").append("<h3 class=\"content-tmplate\"> No Result </h3>");
       }
-
     });
-
-function searchresult()
-{
-  var splitsearch = $('#input_search').val().split(',');
-  
-  if(splitsearch[2] != undefined){
-
-    $("#resultinfo").empty();
-    $.each(searchdata.item, function(i, o) {
-
-     if(o.OID == splitsearch[2])
-
-       $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>"); 
-
-   }); 
-    $('#price').focus();
-  }else{
-
-    $("#resultinfo").empty();
-    var searchtxt = $("#input_search").val();
-
-    if(searchtxt=="")
-    {
-      $("#resultinfo").empty();
-
-      $("#resultinfo").append("<h4 class=\"content-tmplate\"> 請輸入 ISBN 或 書名 </h4>")
-    }else{
-      searchapi= detailapiP1 + "datafeedjson.ashx" + detailapiP2 + 'ISBN=' + searchtxt;
-      $.getJSON(searchapi, function(jstr) {
-        if(jstr.item.length == 1){
-    $.each(jstr.item, function(i, o) { // index, object
-      $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>"+"<label for=\"price\">售價 : </label><input type=\"text\" name=\"price\" id=\"price\" autofocus><br/><label for=\"amount\">數量 : </label><input type=\"text\" name=\"amount\" id=\"amount\" value=\"1\"><br/><button href=\"#\" type=\"button\" class=\" btn btn-default \" id=\"ok\" onclick=\"adddetail()\">OK</button>");
-    });
-    $('#price').focus();
-  }else{
-    $("#resultinfo").append("<p class=\"content-tmplate\"> No Result </p>")
-  }
-})
-    }
-  }
-  $('#input_search').val('');
-
-  $( "#price" ).keydown(function(data) {
-    if(data.keyCode==13)
-    {
-      $('#amount').focus();
-    }
-  });
-  $( "#amount" ).keydown(function(data) {
-    if(data.keyCode==13)
-    {
-      $('#ok').focus();
-    }
-  });
 }
+}
+$('#input_search').val('');
+}
+});
 
-function adddetail()
-{
+
+//auto complete
+function appenData (ele,data){
+  console.log(ele,data);
+  mySource = [] ;
+  for(var i=0;i<data.item.length;i++)
+    mySource.push( { id : data.item[i].OID, name : data.item[i].Title + "," + data.item[i].Publisher + "," + data.item[i].OID});
+  console.log(mySource);
+  ele.typeahead().data('typeahead').source=mySource;
+  ele.typeahead({ source: mySource}).data('typeahead').lookup();
+}
+});
+
+
+function adddetail(oid){
   var btitle = $("#title").text();
   var bprice = $("#price").val();
   var bamount = $("#amount").val();
 
   if($.isNumeric(bprice) && $.isNumeric(bamount))
   {
-    detail_list[detail_list.length]="<tr><td></td><td>" + btitle +"</td><td id=\"price"+detail_list.length+"\">"+bprice+"</td><td id=\"amount"+detail_list.length+"\">"+bamount+"</td></tr>";
+
+    detail_list.push({ OID : oid, Title : btitle, Price : bprice, Amount : bamount});
     $("#resultinfo").empty();
     $('#input_search').focus();
-  }else
+
+  }else{
+   if($('#price').val() == "")
+   {
+    $('#price').focus();
+  }else{
+    $('#amount').focus();
+  }
+}
+showdetail();
+}
+
+function deldetail(index){
+  //alert();
+  for(var i=0; i <detail_list.length; i++)
   {
-    alert("格式輸入錯誤");
-    if($('#price').val() == "")
-    {
-      $('#price').focus();
-    }else{
-      $('#amount').focus();
+    if ( index == detail_list[i].OID ){
+      detail_list.splice(i,1);
+      break;
     }
   }
-  showdetail();
-
-}
-function deldetail(index){
-
-  detail_list.splice(index,1);
+  //detail_list.splice(index,1);
   showdetail();
 
 }
 function showdetail(){
   $("#detailtable").empty();
-  $("#detailtable").append("<tr>-1</tr>");
-  for(var i=detail_list.length-1;i>=0;i--)      
-    $("#detailtable").append(detail_list[i]);
+  $("#detailtable").append("<tr></tr>");
+  for(var i=detail_list.length-1;i>=0;i--){      
+
+
+    var td_del = $('<td>').html("<button onclick=\"+ deldetail("+ detail_list[i].OID +") \"><i class=\"fa fa-times\"></i></button>");
+    var td_title = $('<td>').text(detail_list[i].Title);
+    var td_price = $('<td>').attr({
+      id: 'price' + i }).text(detail_list[i].Price);
+    var td_amount = $('<td>').attr({
+      id: 'amount' + i }).text(detail_list[i].Amount);
+    //console.log(td_price.id);
+    $("#detailtable").append("<tr>").append(td_del).append(td_title).append(td_price).append(td_amount).append("</tr>");
+  }
   totalcost();
 }
 
@@ -173,7 +245,6 @@ function totalcost(){
     total += price * amount;
   }
   document.getElementById("totalprice").innerHTML = 'NT$　' + total;
-
 }
 
 function dealcomplete(){
@@ -216,9 +287,7 @@ function dealcomplete(){
           <table class="table book-template" >
             <thead>
               <th colspan="3">
-
                 <input type="text" class=" input-medium search-query" id="input_search" placeholder="請輸入[ISBN]或[完整書名]" data-provide="typeahead" autofocus >
-
               </th>
               <th><button class=" btn btn-default" id="search"><i class="fa fa-search" ></i></button></th>
             </thead>
@@ -226,7 +295,7 @@ function dealcomplete(){
               <tr>
                 <th colspan="2">消費總金額</th>
                 <th id="totalprice" >$0</th>
-                <th><button class="btn btn-default" id="complete">Complete</button></th>
+                <th><button class="btn btn-warning" id="complete">結帳</button></th>
               </tr>
               <tr>
                 <th>刪除</th>
@@ -242,7 +311,6 @@ function dealcomplete(){
       </div>
       <div class="col-md-5 starter-template bgc" >
         <div class="book-template" id="resultinfo">
-
         </div>
       </div>
     </div>
