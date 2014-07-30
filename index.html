@@ -65,40 +65,56 @@
             $.each(searchdata.item, function(i, o) {
 
               if(o.OID == splitsearch[2]){
-               $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>");
+                var imgpath = "http://static.findbook.tw/image/book/"+o.ISBN+"/large",
+                img_book = $('<img>').attr({
+                  alt: o.Title,
+                  src: imgpath
+                }).css({
+                  margin: '10px',
+                  height: '140px',
+                  float: 'left'
+                }),
+                h3_title = $('<h3>').attr('id', 'title').text(o.Title),
+                p_bookinfo = $('<p>').html(o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate),
+                div_box = $('<div>').css({
+                  border: '1px solid',
+                  padding: '0px 15px'
+                }).addClass('content-tmplate').append(img_book).append(h3_title).append(p_bookinfo);
+                $("#resultinfo").append(div_box);
+                //$("#resultinfo").append("<img alt=\"The Secret祕密\" src=\"http://static.findbook.tw/image/book/9789861750675/large\"><div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>");
 
 
-               var lab_price = $('<label>').attr('for', 'price').text('售價'),
-               inp_price = $('<input>').attr({
-                name: 'price',
-                id: 'price' }).focus(),
-               lab_amount= $('<label>').attr('for', 'amount').text('數量'),
-               inp_amount = $('<input>').attr({
-                name: 'amount',
-                id: 'amount',
-                value: '1' }),
-               btn_ok = $('<button>').attr({
-                href: '#',
-                id: 'ok'
-              }).addClass('btn btn-default').text('OK');
+                var lab_price = $('<label>').attr('for', 'price').text('售價'),
+                inp_price = $('<input>').attr({
+                  name: 'price',
+                  id: 'price' }).focus(),
+                lab_amount= $('<label>').attr('for', 'amount').text('數量'),
+                inp_amount = $('<input>').attr({
+                  name: 'amount',
+                  id: 'amount',
+                  value: '1' }),
+                btn_ok = $('<button>').attr({
+                  href: '#',
+                  id: 'ok'
+                }).addClass('btn btn-default').text('OK');
 
-               $("#resultinfo").append(lab_price).append(inp_price).append('<br>')
-               .append(lab_amount).append(inp_amount).append('<br>').append(btn_ok);
+                $("#resultinfo").append(lab_price).append(inp_price).append('<br>')
+                .append(lab_amount).append(inp_amount).append('<br>').append(btn_ok);
 
 
-               inp_price.on('keyup', function(event) {
+                inp_price.on('keyup', function(event) {
                  if(event.keyCode==13)inp_amount.focus();  
                });
 
-               inp_amount.on('keyup', function(event) {
+                inp_amount.on('keyup', function(event) {
                  if(event.keyCode==13)btn_ok.focus();  
                });
 
-               btn_ok.on('click', function(event) {
+                btn_ok.on('click', function(event) {
                  adddetail(o.OID);  
                });
-             }
-           }); 
+              }
+            }); 
 
 
 $('#price').focus();
@@ -119,8 +135,22 @@ $('#price').focus();
     $.getJSON(searchapi, function(jstr) {
       if(jstr.item.length == 1){
 
-
-        $("#resultinfo").append("<div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+jstr.item[0].Title+"</h3><p>"+jstr.item[0].ISBN+"<br/>"+jstr.item[0].Author+"<br/>"+jstr.item[0].Publisher+"<br/>"+jstr.item[0].PDate+"</p></div>");
+        var imgpath = "http://static.findbook.tw/image/book/"+jstr.item[0].ISBN+"/large",
+        img_book = $('<img>').attr({
+          alt: jstr.item[0].Title,
+          src: imgpath
+        }).css({
+          margin: '10px',
+          height: '120px',
+          float: 'left'
+        }),
+        h3_title = $('<h3>').attr('id', 'title').text(jstr.item[0].Title),
+        p_bookinfo = $('<p>').html(jstr.item[0].ISBN+"<br/>"+jstr.item[0].Author+"<br/>"+jstr.item[0].Publisher+"<br/>"+jstr.item[0].PDate),
+        div_box = $('<div>').css({
+          border: '1px solid',
+          padding: '0px 15px'
+        }).addClass('content-tmplate').append(img_book).append(h3_title).append(p_bookinfo);
+        $("#resultinfo").append(div_box);
 
 
         var lab_price = $('<label>').attr('for', 'price').text('售價'),
@@ -177,7 +207,7 @@ function appenData (ele,data){
 }
 });
 
-
+//增加清單資料
 function adddetail(oid){
   var btitle = $("#title").text();
   var bprice = $("#price").val();
@@ -200,7 +230,7 @@ function adddetail(oid){
 }
 showdetail();
 }
-
+//刪除所選清單資料
 function deldetail(index){
   //alert();
   for(var i=0; i <detail_list.length; i++)
@@ -210,28 +240,32 @@ function deldetail(index){
       break;
     }
   }
-  //detail_list.splice(index,1);
   showdetail();
 
 }
+//顯示購買清單
 function showdetail(){
   $("#detailtable").empty();
   $("#detailtable").append("<tr></tr>");
   for(var i=detail_list.length-1;i>=0;i--){      
+    /*var icon_del = $('i').addClass('fa fa-times');
+    var btn_del = $('<button>').append(icon_del);
 
-
+    var td_del = $('<td>').append(btn_del);*/
     var td_del = $('<td>').html("<button onclick=\"+ deldetail("+ detail_list[i].OID +") \"><i class=\"fa fa-times\"></i></button>");
     var td_title = $('<td>').text(detail_list[i].Title);
     var td_price = $('<td>').attr({
       id: 'price' + i }).text(detail_list[i].Price);
     var td_amount = $('<td>').attr({
       id: 'amount' + i }).text(detail_list[i].Amount);
-    //console.log(td_price.id);
     $("#detailtable").append("<tr>").append(td_del).append(td_title).append(td_price).append(td_amount).append("</tr>");
-  }
-  totalcost();
+    //(function(ele,index){
+        //ele.click(deldetail(index));
+    //})(btn_del,detail_list[i].OID);
 }
-
+totalcost();
+}
+// 顯示總價
 function totalcost(){
 
   var total = 0;
@@ -271,7 +305,8 @@ function dealcomplete(){
       </div>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="#">結帳</a></li>
+          <li ><a href="#">交易紀錄</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#login">Login</a></li>
