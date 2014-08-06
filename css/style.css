@@ -3,6 +3,19 @@
 我們自定義的CSS樣式
 
 */
+h1,h2,h3{
+	padding: 0;
+	margin: 0;
+}
+input:focus{
+	background-color: #FFF7E1;
+}
+th{
+	min-width: 50px;
+}
+tr{
+	border-color: gray;
+}
 
 .starter-template{
 	margin-top: 5%;
@@ -10,14 +23,19 @@
 
 .content-tmplate{
 	margin: 3%;
+	border: solid 1px #888;
+	padding: 15px;
 }
 
 .book-template{
 	margin: 30px;
+	width: 90%;
 }
 
 .bgc{
 	height: 700px;
+	box-sizing: border-box;
+	padding:  0 15px;
 }
 
 .bgc:nth-of-type(odd) {
@@ -28,4 +46,73 @@
 .bgc:nth-of-type(even) {
 	background-image: url(../img/bookright.jpg);
 	background-repeat:no-repeat; 
+}
+
+.tr-focus{
+	-webkit-animation:focus2sc 1s  linear forwards;
+	animation:focus2sc 1s linear forwards;
+}
+
+
+.book-img{
+	width: 100px;
+	height: auto;
+	margin-right: 10px;
+	vertical-align: top;
+}
+
+.book-info{
+	display: inline-block;
+	width: 230px;
+}
+
+.book-info-tit{
+	margin-bottom: 10px
+}
+
+.totalprice-tit{
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+
+
+
+
+
+
+
+#totalprice{
+	min-width: 150px;
+	font-size: 25px;
+	display: inline-block;
+	vertical-align: middle;
+	color: #CC3333;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@keyframes focus2sc {
+	50%{	background-color: #DFDFFF; }
+	100%{	background-color: transparent;}
+}
+
+@-webkit-keyframes focus2sc {
+	50%{	background-color: #DFDFFF; }
+	100%{	background-color: transparent;}
 }

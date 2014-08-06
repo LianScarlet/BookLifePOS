@@ -53,17 +53,17 @@
                 img_book = $('<img>').attr({
                   alt: o.Title,
                   src: imgpath
-                }).css({
-                  margin: '10px',
-                  height: '140px',
-                  float: 'left'
-                }),
-                h3_title = $('<h3>').attr('id', 'title').text(o.Title),
+                }).addClass('book-img'),
+
+
+                h3_title = $('<h3>').attr('id', 'title').addClass('book-info-tit').text(o.Title),
                 p_bookinfo = $('<p>').html(o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate),
-                div_box = $('<div>').css({
-                  border: '1px solid',
-                  padding: '0px 15px'
-                }).addClass('content-tmplate').append(img_book).append(h3_title).append(p_bookinfo);
+                infodiv = $('<div>').addClass('book-info').append(h3_title).append(p_bookinfo),
+                
+                div_box = $('<div>').addClass('content-tmplate').append(img_book).append(infodiv);
+
+              
+
                 $("#resultinfo").append(div_box);
                 //$("#resultinfo").append("<img alt=\"The Secret祕密\" src=\"http://static.findbook.tw/image/book/9789861750675/large\"><div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>");
 
@@ -71,7 +71,8 @@
                 var lab_price = $('<label>').attr('for', 'price').text('售價'),
                 inp_price = $('<input>').attr({
                   name: 'price',
-                  id: 'price' }).focus(),
+                  id: 'price' 
+                  }).focus(),
                 lab_amount= $('<label>').attr('for', 'amount').text('數量'),
                 inp_amount = $('<input>').attr({
                   name: 'amount',
@@ -200,7 +201,7 @@ $('#input_search').val('');
       if($.isNumeric(bprice) && $.isNumeric(bamount))
       {
 
-        detail_list.push({ OID : oid, Title : btitle, Price : bprice, Amount : bamount});
+        detail_list.push({ OID : oid, Title : btitle, Price : parseInt(bprice), Amount : bamount});
         $("#resultinfo").empty();
         $('#input_search').focus();
 
@@ -243,6 +244,7 @@ $('#input_search').val('');
         var td_amount = $('<td>').attr({
           id: 'amount' + i }).text(detail_list[i].Amount);
         var tr_row = $('<tr>');
+        if(i==detail_list.length-1) tr_row.addClass('tr-focus');
         tr_row.append(td_del).append(td_title).append(td_price).append(td_amount)
         $("#detailtable").append(tr_row);
         //(function(ele,index){
@@ -264,7 +266,7 @@ totalcost();
         amount = document.getElementById("amount"+i).textContent;
         total += price * amount;
       }
-      document.getElementById("totalprice").innerHTML = 'NT$　' + total;
+      document.getElementById("totalprice").innerHTML = 'NT$ ' + total;
     }
 
     function dealcomplete(){
