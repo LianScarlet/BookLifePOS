@@ -65,8 +65,7 @@
               
 
                 $("#resultinfo").append(div_box);
-                //$("#resultinfo").append("<img alt=\"The Secret祕密\" src=\"http://static.findbook.tw/image/book/9789861750675/large\"><div style=\"border:1px solid; padding:0px 15px;\" class=\"content-tmplate\"><h3 id=\"title\">"+o.Title+"</h3><p>"+o.ISBN+"<br/>"+o.Author+"<br/>"+o.Publisher+"<br/>"+o.PDate+"</p></div>");
-
+                
 
                 var lab_price = $('<label>').attr('for', 'price').text('售價'),
                 inp_price = $('<input>').attr({
@@ -121,6 +120,23 @@ $('#price').focus();
       if(jstr.item.length == 1){
 
         var imgpath = "http://static.findbook.tw/image/book/"+jstr.item[0].ISBN+"/large",
+                img_book = $('<img>').attr({
+                  alt: jstr.item[0].Title,
+                  src: imgpath
+                }).addClass('book-img'),
+
+
+                h3_title = $('<h3>').attr('id', 'title').addClass('book-info-tit').text(jstr.item[0].Title),
+                p_bookinfo = $('<p>').html(jstr.item[0].ISBN+"<br/>"+jstr.item[0].Author+"<br/>"+jstr.item[0].Publisher+"<br/>"+jstr.item[0].PDate),
+                infodiv = $('<div>').addClass('book-info').append(h3_title).append(p_bookinfo),
+                
+                div_box = $('<div>').addClass('content-tmplate').append(img_book).append(infodiv);
+
+              
+
+                $("#resultinfo").append(div_box);
+
+        /*var imgpath = "http://static.findbook.tw/image/book/"+jstr.item[0].ISBN+"/large",
         img_book = $('<img>').attr({
           alt: jstr.item[0].Title,
           src: imgpath
@@ -135,7 +151,7 @@ $('#price').focus();
           border: '1px solid',
           padding: '0px 15px'
         }).addClass('content-tmplate').append(img_book).append(h3_title).append(p_bookinfo);
-        $("#resultinfo").append(div_box);
+        $("#resultinfo").append(div_box);*/
 
 
         var lab_price = $('<label>').attr('for', 'price').text('售價'),
