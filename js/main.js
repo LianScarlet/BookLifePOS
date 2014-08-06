@@ -230,7 +230,7 @@ $('#input_search').val('');
     //顯示購買清單
     function showdetail(){
       $("#detailtable").empty();
-      $("#detailtable").append("<tr></tr>");
+      //$("#detailtable").append("<tr></tr>");
       for(var i=detail_list.length-1;i>=0;i--){      
         /*var icon_del = $('i').addClass('fa fa-times');
         var btn_del = $('<button>').append(icon_del);
@@ -242,7 +242,9 @@ $('#input_search').val('');
           id: 'price' + i }).text(detail_list[i].Price);
         var td_amount = $('<td>').attr({
           id: 'amount' + i }).text(detail_list[i].Amount);
-        $("#detailtable").append("<tr>").append(td_del).append(td_title).append(td_price).append(td_amount).append("</tr>");
+        var tr_row = $('<tr>');
+        tr_row.append(td_del).append(td_title).append(td_price).append(td_amount)
+        $("#detailtable").append(tr_row);
         //(function(ele,index){
             //ele.click(deldetail(index));
         //})(btn_del,detail_list[i].OID);
@@ -267,7 +269,7 @@ totalcost();
 
     function dealcomplete(){
       $("#detailtable").empty();
-      $("#detailtable").append("<tr></tr>");
+      //$("#detailtable").append("<tr></tr>");
       detail_list = [];
       totalcost();
       $('#input_search').val('');;
